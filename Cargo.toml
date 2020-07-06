@@ -1,0 +1,7 @@
+[package]
+name = "lum"
+version = "0.1.0"
+authors = ["Dmitry Vrublevsky <dmitry@vrublevsky.me>"]
+edition = "2018"
+
+[dependencies]
