@@ -1,3 +1,3 @@
-# Lum
+# Lox
 
-Toy language with the help from [Crafting Interpreters](https://craftinginterpreters.com).
+Toy language By [Crafting Interpreters](https://craftinginterpreters.com).
