@@ -15,3 +15,5 @@ Kotlin-based Lox interpreter.
 * [ ] Error reporting
   * [ ] Show line
   * [ ] Coalesce sequence of invalid characters into single error
+* [ ] Scanner
+  * [ ] Escape sequences in string

@@ -33,10 +33,10 @@ class Scanner(private val source: String) {
             '+' -> addToken(PLUS)
             ';' -> addToken(SEMICOLON)
             '*' -> addToken(STAR)
-            '!' -> if (match('=')) BANG_EQUAL else BANG
-            '=' -> if (match('=')) EQUAL_EQUAL else EQUAL
-            '<' -> if (match('=')) LESS_EQUAL else LESS
-            '>' -> if (match('=')) GREATER_EQUAL else GREATER
+            '!' -> addToken(if (match('=')) BANG_EQUAL else BANG)
+            '=' -> addToken(if (match('=')) EQUAL_EQUAL else EQUAL)
+            '<' -> addToken(if (match('=')) LESS_EQUAL else LESS)
+            '>' -> addToken(if (match('=')) GREATER_EQUAL else GREATER)
             '/' -> {
                 if (match('/')) {
                     // A comment goes until the end of the line.
@@ -49,6 +49,7 @@ class Scanner(private val source: String) {
             }
             ' ', '\r', '\t' -> {} // ignore whitespace
             '\n' -> line++
+            '"' -> string()
             else -> error(line, "Unexpected character.")
         }
     }
@@ -71,6 +72,25 @@ class Scanner(private val source: String) {
     private fun peek(): Char {
         if (isAtEnd()) return '\u0000'
         return source[current]
+    }
+
+    private fun string() {
+        while (peek()!= '"' && !isAtEnd()) {
+            if (peek() == '\n') line++
+            advance()
+        }
+
+        if (isAtEnd()) {
+            error(line, "Unterminated string.")
+            return
+        }
+
+        // The closing "
+        advance()
+
+        // Trim the surrounding quotes
+        val value = source.substring(start + 1, current - 1)
+        addToken(STRING, value)
     }
 
     private fun addToken(type: TokenType) {
