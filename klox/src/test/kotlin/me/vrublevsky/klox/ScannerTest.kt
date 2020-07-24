@@ -27,7 +27,7 @@ class ScannerTest {
 
     @Test
     fun comment() {
-        val source =  """
+        val source = """
             // comment
         """.trimIndent()
         val tokens = Scanner(source).scanTokens()
@@ -44,6 +44,19 @@ class ScannerTest {
         val tokens = Scanner(source).scanTokens()
         assertThat(tokens).containsExactly(
             Token(TokenType.STRING, "\"hello\"", "hello", 1),
+            Token(TokenType.EOF, "", null, 1)
+        )
+    }
+
+    @Test
+    fun number() {
+        val source = """
+            12 127.5
+        """.trimIndent()
+        val tokens = Scanner(source).scanTokens()
+        assertThat(tokens).containsExactly(
+            Token(TokenType.NUMBER, "12", 12.toDouble(), 1),
+            Token(TokenType.NUMBER, "127.5", 127.5, 1),
             Token(TokenType.EOF, "", null, 1)
         )
     }

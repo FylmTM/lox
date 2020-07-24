@@ -47,10 +47,17 @@ class Scanner(private val source: String) {
                     addToken(SLASH)
                 }
             }
-            ' ', '\r', '\t' -> {} // ignore whitespace
+            ' ', '\r', '\t' -> {
+            } // ignore whitespace
             '\n' -> line++
             '"' -> string()
-            else -> error(line, "Unexpected character.")
+            else -> {
+                if (c.isDigit()) {
+                    number()
+                } else {
+                    error(line, "Unexpected character.")
+                }
+            }
         }
     }
 
@@ -74,8 +81,13 @@ class Scanner(private val source: String) {
         return source[current]
     }
 
+    private fun peekNext(): Char {
+        if (current + 1 >= source.length) if (isAtEnd()) return '\u0000';
+        return source[current + 1];
+    }
+
     private fun string() {
-        while (peek()!= '"' && !isAtEnd()) {
+        while (peek() != '"' && !isAtEnd()) {
             if (peek() == '\n') line++
             advance()
         }
@@ -91,6 +103,19 @@ class Scanner(private val source: String) {
         // Trim the surrounding quotes
         val value = source.substring(start + 1, current - 1)
         addToken(STRING, value)
+    }
+
+    private fun number() {
+        while (peek().isDigit()) advance()
+
+        // Look for a fractional part
+        if (peek() == '.' && peekNext().isDigit()) {
+            advance()
+
+            while (peek().isDigit()) advance()
+        }
+
+        addToken(NUMBER, source.substring(start, current).toDouble())
     }
 
     private fun addToken(type: TokenType) {
